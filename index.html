@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EmojiWord — using emojis and idioms to make learning English more fun</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Шапка приложения -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-logo" aria-hidden="true">🎉</div>
+        <div class="brand-text">
+          <h1 class="brand-title">EmojiWord</h1>
+          <!-- Точный неизменный английский подзаголовок по требованию -->
+          <p class="brand-subtitle" id="brand-subtitle">using emojis and idioms to make learning English more fun</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Заметный переключатель языков: Қазақша / Русский / English -->
+        <div class="lang-selector-group" role="group" aria-label="Тілді таңдау / Выбор языка / Language selection">
+          <button type="button" class="lang-btn active" data-lang="kk" title="Қазақ тілі">Қазақша</button>
+          <button type="button" class="lang-btn" data-lang="ru" title="Русский язык">Русский</button>
+          <button type="button" class="lang-btn" data-lang="en" title="English language">English</button>
+        </div>
+
+        <button id="open-favorites-btn" class="btn-favorites" title="Сақталған сөздік">
+          <span class="star-icon">⭐</span>
+          <span class="fav-label" id="fav-label">Сөздігім</span>
+          <span id="fav-counter" class="fav-badge">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Основные разделы: Вкладки переключения «Чат / Сөздік» и «Мини-ойындар» -->
+    <nav class="app-nav" aria-label="Басты мәзір">
+      <button type="button" id="tab-messenger-btn" class="nav-tab-btn active">
+        <span class="tab-icon">💬</span>
+        <span class="tab-title" id="tab-messenger-text">Хабарлама және сөздік</span>
+      </button>
+      <button type="button" id="tab-games-btn" class="nav-tab-btn">
+        <span class="tab-icon">🎮</span>
+        <span class="tab-title" id="tab-games-text">Мини-ойындар</span>
+        <span class="games-badge">3 ойын</span>
+      </button>
+    </nav>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="app-main">
+
+      <!-- ========================================================
+           РАЗДЕЛ 1: МЕССЕНДЖЕР И УЧЕБНАЯ ПАНЕЛЬ ЭМОДЗИ
+           ======================================================== -->
+      <div id="view-messenger" class="app-view">
+        
+        <!-- Поле ввода в стиле мессенджера (без самодельной буквенной клавиатуры!) -->
+        <section class="section-composer card-box" aria-labelledby="composer-heading">
+          <div class="section-header-compact">
+            <h2 id="composer-heading" class="section-title">
+              <span class="step-num">1</span>
+              <span id="composer-heading-text">Хабарлама жазу</span>
+            </h2>
+            <div class="composer-tools">
+              <button id="clear-text-btn" class="btn-tool" title="Мәтінді тазалау">
+                🧹 Тазалау
+              </button>
+              <button id="copy-text-btn" class="btn-tool" title="Көшіріп алу">
+                📋 Көшіру
+              </button>
+            </div>
+          </div>
+
+          <!-- Контейнер ввода сообщения с кнопкой вызова эмодзи-панели -->
+          <div class="messenger-input-box">
+            <textarea 
+              id="message-input" 
+              placeholder="Хабарламаңызды жазыңыз немесе 😊 батырмасын басып сөз таңдаңыз..." 
+              rows="3" 
+              aria-label="Хабарлама енгізу"></textarea>
+
+            <div class="messenger-action-bar">
+              <button type="button" id="toggle-emoji-panel-btn" class="btn-toggle-emoji active" title="Эмодзи тақтасын ашу/жабу">
+                <span class="emoji-btn-icon">😊</span>
+                <span id="toggle-emoji-label">Эмодзи тақтасы</span>
+              </button>
+              <div class="input-info-wrap">
+                <span id="char-counter" class="counter-text">0 таңба</span>
+              </div>
+            </div>
+          </div>
+          <p class="input-hint" id="input-hint">💡 Компьютерде немесе телефонның кәдімгі пернетақтасында теріңіз</p>
+        </section>
+
+        <!-- Учебная панель эмодзи с фильтром категорий (40+ эмодзи) -->
+        <section id="emoji-panel-container" class="section-emoji-selector card-box" aria-labelledby="emoji-heading">
+          <div class="selector-top-bar">
+            <h2 id="emoji-heading" class="section-title">
+              <span class="step-num">2</span>
+              <span id="emoji-heading-text">Эмодзи таңдаңыз</span>
+            </h2>
+            
+            <!-- Переключатель режима: Слова / Идиомы -->
+            <div class="mode-toggle-group" role="tablist" aria-label="Оқу режимін таңдау">
+              <button id="mode-words-btn" class="mode-btn active" role="tab" aria-selected="true">
+                <span class="mode-icon">📖</span>
+                <span class="mode-text" id="mode-words-text">Сөздер</span>
+              </button>
+              <button id="mode-idioms-btn" class="mode-btn" role="tab" aria-selected="false">
+                <span class="mode-icon">✨</span>
+                <span class="mode-text" id="mode-idioms-text">Идиомалар</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Фильтры категорий эмодзи -->
+          <div class="category-chips-bar" role="tablist" aria-label="Эмодзи санаттары">
+            <button type="button" class="category-chip active" data-category="all" id="cat-all-btn">Барлығы (42)</button>
+            <button type="button" class="category-chip" data-category="faces" id="cat-faces-btn">Сезімдер мен жүздер</button>
+            <button type="button" class="category-chip" data-category="gestures" id="cat-gestures-btn">Қимылдар мен қолдар</button>
+            <button type="button" class="category-chip" data-category="animals" id="cat-animals-btn">Жануарлар</button>
+            <button type="button" class="category-chip" data-category="nature" id="cat-nature-btn">Табиғат</button>
+            <button type="button" class="category-chip" data-category="objects" id="cat-objects-btn">Заттар мен белгілер</button>
+          </div>
+
+          <!-- Сетка из 42 эмодзи -->
+          <div class="emoji-grid" id="emoji-grid" role="group" aria-label="Эмодзилер жинағы">
+            <!-- Генерируется из data.js на текущем языке -->
+          </div>
+        </section>
+
+        <!-- Карточка выбранного выражения -->
+        <section class="section-card card-box" aria-labelledby="card-heading">
+          <div class="section-header-compact">
+            <h2 id="card-heading" class="section-title">
+              <span class="step-num">3</span>
+              <span id="card-heading-text">Таңдалған өрнек</span>
+            </h2>
+            <span id="card-badge" class="badge-mode">📖 Ағылшын сөзі</span>
+          </div>
+
+          <div class="expression-card" id="expression-card">
+            <!-- Эмодзи, Слово (всегда EN), Транскрипция, Перевод -->
+            <div class="card-hero">
+              <div class="card-emoji-bubble" id="card-emoji">😊</div>
+              <div class="card-hero-info">
+                <div class="card-title-row">
+                  <h3 class="card-term" id="card-term">happy</h3>
+                  <span class="card-transcription" id="card-transcription">[ˈhæpi]</span>
+                </div>
+                <div class="card-translation" id="card-translation">бақытты, қуанышты</div>
+              </div>
+            </div>
+
+            <!-- Блок нюанса смысла / фишки идиомы -->
+            <div class="nuance-panel" id="nuance-panel">
+              <div class="nuance-title">
+                <span id="nuance-icon">💡</span>
+                <span id="nuance-header">Мағынасы мен қолданылуы:</span>
+              </div>
+              <p class="nuance-text" id="card-nuance">
+                Жақсы көңіл-күй мен қуанышты білдіретін негізгі сөз.
+              </p>
+            </div>
+
+            <!-- Блок примера: английское предложение + перевод -->
+            <div class="example-panel">
+              <div class="example-header">
+                <span class="example-tag" id="example-tag">Өмірден мысал:</span>
+              </div>
+              <div class="example-content">
+                <p class="example-en" id="card-example">I am so happy to see my best friends today.</p>
+                <p class="example-ru" id="card-example-ru">Бүгін ең жақын достарымды көргеніме өте қуаныштымын.</p>
+              </div>
+            </div>
+
+            <!-- Управление озвучкой -->
+            <div class="speech-controls-panel">
+              <div class="speech-buttons">
+                <button id="speak-term-btn" class="btn-action btn-speak" title="Сөздің айтылуын тыңдау">
+                  <span class="btn-icon">🔊</span>
+                  <span class="btn-label" id="speak-term-label">Тыңдау</span>
+                </button>
+                <button id="speak-example-btn" class="btn-action btn-speak-secondary" title="Мысалдың айтылуын тыңдау">
+                  <span class="btn-icon">🎧</span>
+                  <span class="btn-label" id="speak-example-label">Мысалды тыңдау</span>
+                </button>
+              </div>
+
+              <!-- Переключатель скорости речи -->
+              <div class="speed-selector" aria-label="Дауыс жылдамдығы">
+                <span class="speed-label" id="speed-label-text">Жылдамдық:</span>
+                <div class="speed-toggle">
+                  <button id="speed-slow-btn" class="speed-btn" data-speed="0.75" title="Баяу жылдамдық">
+                    🐢 Баяу (0.75x)
+                  </button>
+                  <button id="speed-normal-btn" class="speed-btn active" data-speed="1.0" title="Қалыпты жылдамдық">
+                    🐰 Қалыпты (1x)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Статус озвучки при ошибках -->
+            <div id="speech-status" class="speech-status-banner hidden" role="status" aria-live="polite">
+              <span id="speech-status-icon">⚠️</span>
+              <span id="speech-status-text">Дауыстап оқу әзірше қолжетімді емес</span>
+            </div>
+
+            <!-- Нижние кнопки: Вставить в сообщение (в позицию курсора или заменяя выделение) и Сохранить -->
+            <div class="card-actions-bottom">
+              <button id="insert-into-message-btn" class="btn-action btn-insert" title="Бұл сөзді хабарламаға қосу">
+                <span class="btn-icon">➕</span>
+                <span class="btn-label" id="insert-btn-label">Хабарламаға қосу</span>
+              </button>
+              <button id="toggle-favorite-btn" class="btn-action btn-favorite-toggle" title="Сөздікке сақтау">
+                <span class="btn-icon">⭐</span>
+                <span class="btn-label" id="fav-btn-label">Сақтап алу</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+
+      <!-- ========================================================
+           РАЗДЕЛ 2: МИНИ-ИГРЫ (3 УВЛЕКАТЕЛЬНЫЕ ИГРЫ)
+           ======================================================== -->
+      <div id="view-games" class="app-view hidden">
+        
+        <!-- Меню выбора мини-игр -->
+        <section id="games-menu-section" class="games-menu-container card-box">
+          <div class="games-menu-header">
+            <h2 class="games-main-title" id="games-title">Ағылшын тілі мини-ойындары</h2>
+            <p class="games-subtitle" id="games-subtitle">Ойын арқылы сөздер мен идиомаларды тез әрі қызықты есте сақтаңыз!</p>
+          </div>
+
+          <div class="games-cards-grid">
+            <!-- Игра 1 -->
+            <div class="game-card">
+              <div class="game-card-icon">🎯</div>
+              <h3 class="game-card-title" id="game1-title">1. Эмоцияны тап</h3>
+              <p class="game-card-desc" id="game1-desc">Ағылшын сөзін оқып, сәйкес келетін эмодзиді таңдаңыз.</p>
+              <button type="button" class="btn-game-launch" id="start-game1-btn">
+                <span id="btn-play-1">Ойнау</span> 🚀
+              </button>
+            </div>
+
+            <!-- Игра 2 -->
+            <div class="game-card">
+              <div class="game-card-icon">🧩</div>
+              <h3 class="game-card-title" id="game2-title">2. Идиоманы құрастыр</h3>
+              <p class="game-card-desc" id="game2-desc">Шашылған сөздерден дұрыс ағылшын идиомасын жинаңыз.</p>
+              <button type="button" class="btn-game-launch" id="start-game2-btn">
+                <span id="btn-play-2">Ойнау</span> 🚀
+              </button>
+            </div>
+
+            <!-- Игра 3 -->
+            <div class="game-card">
+              <div class="game-card-icon">🎧</div>
+              <h3 class="game-card-title" id="game3-title">3. Тыңдап таңда</h3>
+              <p class="game-card-desc" id="game3-desc">Ағылшынша сөзді тыңдап, оған сәйкес эмодзиді табыңыз.</p>
+              <button type="button" class="btn-game-launch" id="start-game3-btn">
+                <span id="btn-play-3">Ойнау</span> 🚀
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Игровой экран (для всех трёх игр) -->
+        <section id="game-active-section" class="game-active-container card-box hidden">
+          <div class="game-top-bar">
+            <button type="button" id="game-back-btn" class="btn-back-game">
+              ← Мини-ойындарға оралу
+            </button>
+            <div class="game-progress-badge" id="game-progress-text">
+              5-тен 1-сұрақ
+            </div>
+          </div>
+
+          <!-- Игровое поле -->
+          <div id="game-stage" class="game-stage">
+            <!-- Динамически рендерится JS-движком -->
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+
+    <!-- Подвал приложения -->
+    <footer class="app-footer">
+      <div class="footer-info">
+        <p id="footer-info-text"><strong>EmojiWord</strong> &bull; using emojis and idioms to make learning English more fun</p>
+        <p class="footer-subtext" id="footer-subtext">Ешқандай хабарлама серверге жіберілмейді. Барлық деректер тек құрылғыңызда сақталады.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Модальное окно избранного («Таңдаулылар / Мой словарик») -->
+  <div id="favorites-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="fav-modal-title">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">⭐</span>
+          <h2 id="fav-modal-title" class="modal-title">Таңдаулылар (Менің сөздігім)</h2>
+        </div>
+        <button id="close-favorites-btn" class="btn-close-modal" title="Жабу">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="fav-summary" id="fav-summary-text">Сөздігіңізде әзірше ештеңе жоқ.</p>
+        <div class="favorites-list" id="favorites-list">
+          <!-- Генерируется через JS -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="clear-favorites-btn" class="btn-modal-danger" title="Барлық сақталған сөздерді өшіру">
+          🗑️ Сөздікті толық тазалау
+        </button>
+        <button id="close-modal-bottom-btn" class="btn-modal-primary">
+          Дайын
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Всплывающий Тост-уведомление -->
+  <div id="toast" class="toast hidden" role="alert" aria-live="assertive">
+    <span id="toast-icon">✨</span>
+    <span id="toast-message">Хабарлама</span>
+  </div>
+
+  <!-- Скрипты: i18n, базы данных, мини-игры и приложение -->
+  <script src="i18n.js"></script>
+  <script src="data.js"></script>
+  <script src="games-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

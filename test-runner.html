@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Автоматические тесты EmojiWord</title>
+</head>
+<body>
+  <div id="test-results" style="font-family: monospace; white-space: pre; padding: 20px;">Запуск тестов EmojiWord...</div>
+
+  <iframe id="app-frame" src="index.html" style="width: 850px; height: 750px; display: none;"></iframe>
+
+  <script>
+    const results = [];
+    function assert(condition, testName, details = "") {
+      if (condition) {
+        results.push(`[PASS] ${testName}`);
+      } else {
+        results.push(`[FAIL] ${testName} ${details ? "(" + details + ")" : ""}`);
+      }
+    }
+
+    window.addEventListener("load", () => {
+      setTimeout(runAllTests, 600);
+    });
+
+    function runAllTests() {
+      const frame = document.getElementById("app-frame");
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      const win = frame.contentWindow;
+
+      try {
+        // ТЕСТ 1: Название EmojiWord и точный подзаголовок
+        const title = doc.title;
+        assert(title.includes("EmojiWord"), 
+          "Тест 1.1: Заголовок вкладки браузера содержит «EmojiWord»", 
+          `title: "${title}"`);
+
+        const brandTitle = doc.querySelector(".brand-title").textContent.trim();
+        assert(brandTitle === "EmojiWord", 
+          "Тест 1.2: Название на главном экране — «EmojiWord»", 
+          `бренд: "${brandTitle}"`);
+
+        const subtitle = doc.getElementById("brand-subtitle").textContent.trim();
+        const expectedSub = "using emojis and idioms to make learning English more fun";
+        assert(subtitle === expectedSub, 
+          "Тест 1.3: Точный английский подзаголовок на главном экране", 
+          `получено: "${subtitle}"`);
+
+        // ТЕСТ 2: Казахский по умолчанию и сохранение языка
+        win.localStorage.removeItem("emoji_english_lang");
+        win.initLanguage();
+        win.applyInterfaceLanguage();
+
+        assert(win.state.currentLang === "kk", 
+          "Тест 2.1: Язык по умолчанию — казахский (kk)");
+
+        // Проверяем, что подзаголовок остаётся английским даже при казахском интерфейсе!
+        const subKk = doc.getElementById("brand-subtitle").textContent.trim();
+        assert(subKk === expectedSub, 
+          "Тест 2.2: Подзаголовок остаётся на английском при казахском языке");
+
+        // Переключаем на русский и проверяем
+        const ruBtn = doc.querySelector('.lang-btn[data-lang="ru"]');
+        ruBtn.click();
+        assert(win.state.currentLang === "ru" && win.localStorage.getItem("emoji_english_lang") === "ru", 
+          "Тест 2.3: Переключение на русский язык и сохранение в localStorage");
+
+        const subRu = doc.getElementById("brand-subtitle").textContent.trim();
+        assert(subRu === expectedSub, 
+          "Тест 2.4: Подзаголовок остаётся на английском при русском языке");
+
+        // ТЕСТ 3: 40+ эмодзи и обязательный список
+        assert(Array.isArray(win.EMOJI_DATABASE) && win.EMOJI_DATABASE.length >= 40, 
+          "Тест 3.1: В базе 40+ эмодзи (содержит " + (win.EMOJI_DATABASE ? win.EMOJI_DATABASE.length : 0) + ")");
+
+        const mandatory = ["👍", "👎", "👏", "🙌", "🤝", "💪", "❤️", "💔", "🔥", "⭐", "🌧️", "☀️", "🧊", "🐝", "🦁", "🐢", "🎯", "🎉"];
+        const existingEmojis = win.EMOJI_DATABASE.map(e => e.emoji);
+        const missing = mandatory.filter(m => !existingEmojis.includes(m));
+        assert(missing.length === 0, 
+          "Тест 3.2: Все обязательные эмодзи присутствуют", 
+          missing.length > 0 ? `не хватает: ${missing.join(", ")}` : "все 18 обязательных на месте");
+
+        // Проверка категорий
+        win.filterCategory("animals");
+        const renderedCount = doc.querySelectorAll(".emoji-card-btn").length;
+        assert(renderedCount === 5, 
+          "Тест 3.3: Фильтр категорий работает (животных: 5)", 
+          `отображено: ${renderedCount}`);
+        win.filterCategory("all");
+
+        // ТЕСТ 4: Мессенджер и отсутствие самодельной клавиатуры
+        const oldKeyboard = doc.getElementById("virtual-keyboard");
+        assert(!oldKeyboard, 
+          "Тест 4.1: Самодельная буквенная экранная клавиатура убрана");
+
+        const toggleEmojiBtn = doc.getElementById("toggle-emoji-panel-btn");
+        assert(toggleEmojiBtn !== null, 
+          "Тест 4.2: Кнопка смайлика 😊 для открытия панели эмодзи присутствует");
+
+        // Проверка вставки и замены выделенного текста
+        const msgInput = doc.getElementById("message-input");
+        msgInput.value = "Hello world!";
+        msgInput.selectionStart = 6;
+        msgInput.selectionEnd = 11; // выделено "world"
+        win.selectEmoji("strong");
+        win.setMode("words");
+        win.insertCurrentExpression();
+
+        assert(msgInput.value.includes("strong"), 
+          "Тест 4.3: Вставка выражения заменяет выделенный текст или вставляет в курсор", 
+          `значение: "${msgInput.value}"`);
+
+        // ТЕСТ 5: База мини-игр (минимум по 15 заданий на каждую игру)
+        assert(win.GAMES_DATABASE.game1.length >= 15, 
+          "Тест 5.1: В игре 1 минимум 15 заданий (" + win.GAMES_DATABASE.game1.length + ")");
+        assert(win.GAMES_DATABASE.game2.length >= 15, 
+          "Тест 5.2: В игре 2 минимум 15 заданий (" + win.GAMES_DATABASE.game2.length + ")");
+        assert(win.GAMES_DATABASE.game3.length >= 15, 
+          "Тест 5.3: В игре 3 минимум 15 заданий (" + win.GAMES_DATABASE.game3.length + ")");
+
+        // ТЕСТ 6: Запуск и прохождение игры 1 («Угадай эмоцию»)
+        win.switchView("games");
+        win.startMiniGame(1);
+        assert(win.state.game.activeGameId === 1 && win.state.game.questions.length === 5, 
+          "Тест 6.1: Игра 1 запущена с раундом из 5 заданий");
+
+        // Симулируем правильный ответ на вопрос 1
+        const q1 = win.state.game.questions[0];
+        const correctBtn = doc.querySelector(`.game-opt-btn[data-emoji="${q1.correctEmoji}"]`);
+        if (correctBtn) {
+          correctBtn.click();
+          assert(win.state.game.score === 1 && win.state.game.answered === true, 
+            "Тест 6.2: Правильный ответ в игре 1 засчитан (+1 балл)");
+        }
+
+        // ТЕСТ 7: Игра 2 («Собери идиому»)
+        win.startMiniGame(2);
+        const q2 = win.state.game.questions[0];
+        assert(win.state.game.activeGameId === 2, 
+          "Тест 7.1: Игра 2 запущена");
+
+        // Кликаем по чипам в правильном порядке
+        q2.words.forEach(w => {
+          const chip = Array.from(doc.querySelectorAll("#chips-pool .word-chip")).find(c => c.dataset.word === w);
+          if (chip) chip.click();
+        });
+        const checkBtn = doc.getElementById("btn-check-idiom");
+        if (checkBtn) {
+          checkBtn.click();
+          assert(win.state.game.score === 1, 
+            "Тест 7.2: Сборка идиомы успешно проверена и начислен балл");
+        }
+
+        // ТЕСТ 8: Игра 3 («Слушай и выбирай») — скрытое слово до ответа
+        win.startMiniGame(3);
+        const revealedWordBefore = doc.getElementById("revealed-word").textContent.trim();
+        assert(revealedWordBefore.includes("???"), 
+          "Тест 8.1: В игре 3 слово скрыто до ответа (???)");
+
+        const q3 = win.state.game.questions[0];
+        const optBtn3 = doc.querySelector(`.game-opt-btn[data-emoji="${q3.correctEmoji}"]`);
+        if (optBtn3) {
+          optBtn3.click();
+          const revealedWordAfter = doc.getElementById("revealed-word").textContent.trim();
+          assert(revealedWordAfter.includes(q3.word), 
+            "Тест 8.2: После ответа слово раскрыто (" + q3.word + ")");
+        }
+
+        // Возвращаемся в мессенджер
+        win.switchView("messenger");
+        assert(msgInput.value.includes("strong"), 
+          "Тест 9: Текст сообщения сохранён после перехода по играм и обратно");
+
+      } catch (err) {
+        results.push(`[CRASH] Исключение: ${err.message}`);
+      }
+
+      const outputEl = document.getElementById("test-results");
+      outputEl.textContent = results.join("\n");
+      console.log(results.join("\n"));
+      window.TEST_COMPLETED = true;
+    }
+  </script>
+</body>
+</html>
