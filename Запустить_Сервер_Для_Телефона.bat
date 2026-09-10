@@ -1,8 +1,8 @@
 @echo off
 chcp 65001 > nul
-title EmojiWord Server for Mobile
+title EmojiWorld Server for Mobile
 echo ===================================================
-echo     Запуск сервера EmojiWord для телефона...
+echo     Запуск сервера EmojiWorld для телефона...
 echo ===================================================
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0server.ps1"
 pause

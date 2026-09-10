@@ -1,5 +1,5 @@
 # =========================================================
-# EmojiWord — Локальный веб-сервер для телефона и ПК
+# EmojiWorld — Локальный веб-сервер для телефона и ПК
 # Не требует сторонних программ, Node.js или прав администратора
 # =========================================================
 
@@ -52,7 +52,7 @@ while ($true) {
 
 Clear-Host
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "         EmojiWord — Веб-сервер для телефона и ПК           " -ForegroundColor Yellow
+Write-Host "         EmojiWorld — Веб-сервер для телефона и ПК          " -ForegroundColor Yellow
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host " 💻 На этом компьютере откройте:" -ForegroundColor White

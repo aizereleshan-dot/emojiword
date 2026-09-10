@@ -1,5 +1,5 @@
 // =========================================================
-// EmojiWord — Главный скрипт логики приложения
+// EmojiWorld — Главный скрипт логики приложения
 // Поддержка 3 языков (kk, ru, en), мессенджера, 42 эмодзи и 3 мини-игр
 // =========================================================
 
@@ -116,9 +116,23 @@ function setLanguage(langCode) {
 }
 
 function applyInterfaceLanguage() {
+  // Заголовок страницы и название бренда
+  document.title = "EmojiWorld — using emojis and idioms to make learning English more fun";
+  const brandTitleEl = document.querySelector(".brand-title");
+  if (brandTitleEl) {
+    brandTitleEl.textContent = t("appName") || "EmojiWorld";
+  }
+
   // Название и подзаголовок (подзаголовок ВСЕГДА остаётся английским!)
   setElemText("brand-subtitle", "using emojis and idioms to make learning English more fun");
   setElemText("fav-label", t("myVocabulary"));
+  setElemText("qr-btn-label", t("qrButton") || "Телефон");
+
+  // Модалка QR-кода
+  setElemText("qr-modal-title", t("qrModalTitle") || "Смартфоннан ашу");
+  setElemText("qr-modal-desc", t("qrModalDesc") || "Камераны осы QR-кодқа бағыттаңыз немесе сілтемені көшіріңіз:");
+  setElemText("copy-qr-link-btn", t("qrCopyBtn") || "📋 Көшіру");
+  setElemText("qr-modal-note", t("qrNote") || "💡 Бұл тұрақты HTTPS-сілтеме кез келген құрылғыда (Android, iPhone) компьютер өшірулі кезде де ашылады.");
 
   // Вкладки
   setElemText("tab-messenger-text", t("tabMessenger"));
@@ -1425,6 +1439,24 @@ function initEventListeners() {
     });
   }
 
+  // Модальное окно QR-кода («Телефоннан ашу»)
+  const openQrBtn = document.getElementById("open-qr-btn");
+  const closeQrBtn = document.getElementById("close-qr-btn");
+  const closeQrBottomBtn = document.getElementById("close-qr-bottom-btn");
+  const copyQrLinkBtn = document.getElementById("copy-qr-link-btn");
+  const qrModal = document.getElementById("qr-modal");
+
+  if (openQrBtn) openQrBtn.addEventListener("click", openQrModal);
+  if (closeQrBtn) closeQrBtn.addEventListener("click", closeQrModal);
+  if (closeQrBottomBtn) closeQrBottomBtn.addEventListener("click", closeQrModal);
+  if (copyQrLinkBtn) copyQrLinkBtn.addEventListener("click", copyQrLink);
+
+  if (qrModal) {
+    qrModal.addEventListener("click", (e) => {
+      if (e.target === qrModal) closeQrModal();
+    });
+  }
+
   // Кнопки запуска мини-игр из меню
   const btnGame1 = document.getElementById("start-game1-btn");
   const btnGame2 = document.getElementById("start-game2-btn");
@@ -1435,6 +1467,73 @@ function initEventListeners() {
   if (btnGame2) btnGame2.addEventListener("click", () => startMiniGame(2));
   if (btnGame3) btnGame3.addEventListener("click", () => startMiniGame(3));
   if (btnGameBack) btnGameBack.addEventListener("click", renderGamesMenu);
+}
+
+// ---------------------------------------------------------
+// Управление окном QR-кода
+// ---------------------------------------------------------
+let qrCodeInstance = null;
+
+function openQrModal() {
+  const modal = document.getElementById("qr-modal");
+  if (!modal) return;
+
+  const currentUrl = window.location.href;
+  const urlInput = document.getElementById("qr-url-input");
+  if (urlInput) {
+    urlInput.value = currentUrl;
+  }
+
+  const container = document.getElementById("qr-canvas-box");
+  if (container) {
+    container.innerHTML = "";
+    if (typeof QRCode !== "undefined") {
+      try {
+        qrCodeInstance = new QRCode(container, {
+          text: currentUrl,
+          width: 190,
+          height: 190,
+          colorDark: "#1E1B4B",
+          colorLight: "#FFFFFF",
+          correctLevel: (typeof QRCode.CorrectLevel !== "undefined") ? QRCode.CorrectLevel.M : 0
+        });
+      } catch (err) {
+        console.warn("QRCode generation error:", err);
+      }
+    }
+  }
+
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeQrModal() {
+  const modal = document.getElementById("qr-modal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+function copyQrLink() {
+  const currentUrl = window.location.href;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(currentUrl).then(() => {
+      showToast(t("toastLinkCopied") || "Сілтеме көшірілді! 🔗", "📋");
+    }).catch(() => {
+      fallbackCopyText(currentUrl);
+    });
+  } else {
+    fallbackCopyText(currentUrl);
+  }
+}
+
+function fallbackCopyText(text) {
+  const input = document.getElementById("qr-url-input");
+  if (input) {
+    input.select();
+    document.execCommand("copy");
+    showToast(t("toastLinkCopied") || "Сілтеме көшірілді! 🔗", "📋");
+  }
 }
 
 // Экспорт для отладки и тестов
@@ -1454,4 +1553,6 @@ if (typeof window !== "undefined") {
   window.selectEmoji = selectEmoji;
   window.setMode = setMode;
   window.t = t;
+  window.openQrModal = openQrModal;
+  window.closeQrModal = closeQrModal;
 }

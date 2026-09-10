@@ -1,6 +1,6 @@
 /* =========================================================
-   EmojiWord — Стили интерфейса
-   Современный, адаптивный дизайн для телефонов, планшетов и ПК
+   EmojiWorld — Стили интерфейса
+   Адаптивный дизайн для мобильных устройств (iOS / Android) и ПК
    ========================================================= */
 
 :root {
@@ -217,6 +217,35 @@ body {
   color: #ffffff;
   box-shadow: 0 2px 6px rgba(79, 70, 229, 0.35);
   transform: scale(1.02);
+}
+
+/* Кнопка "Телефон" (QR-код постоянной ссылки) */
+.btn-qr-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  border: 2px solid #bbf7d0;
+  color: #166534;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+
+.btn-qr-link:hover {
+  background: #dcfce7;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.qr-btn-icon {
+  font-size: 1.1rem;
 }
 
 /* Кнопка "Мой словарик" */
@@ -1489,6 +1518,98 @@ body {
   cursor: pointer;
 }
 
+/* Стили окна QR-кода */
+.qr-modal-dialog {
+  max-width: 440px;
+}
+
+.qr-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 22px 24px;
+  gap: 16px;
+}
+
+.qr-description {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.qr-code-wrapper {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-canvas-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 190px;
+  min-height: 190px;
+}
+
+.qr-canvas-box img,
+.qr-canvas-box canvas {
+  display: block;
+  border-radius: 8px;
+}
+
+.qr-url-box {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+}
+
+.qr-url-input {
+  flex: 1;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  font-family: monospace;
+}
+
+.btn-copy-link {
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 9px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.btn-copy-link:hover {
+  background: var(--primary-hover);
+}
+
+.qr-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  background: #f8fafc;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  margin: 0;
+  border: 1px solid #e2e8f0;
+}
+
 /* ---------------------------------------------------------
    Подвал и тост
    --------------------------------------------------------- */
@@ -1609,6 +1730,11 @@ body {
     font-size: 0.78rem;
     flex: 1;
     text-align: center;
+  }
+
+  .btn-qr-link {
+    padding: 6px 10px;
+    font-size: 0.82rem;
   }
 
   .btn-favorites {

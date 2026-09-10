@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>EmojiWord — using emojis and idioms to make learning English more fun</title>
+  <title>EmojiWorld — using emojis and idioms to make learning English more fun</title>
+  <meta name="description" content="EmojiWorld — using emojis and idioms to make learning English more fun">
+  <meta name="application-name" content="EmojiWorld">
+  <meta name="apple-mobile-web-app-title" content="EmojiWorld">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#4F46E5">
+  <meta property="og:title" content="EmojiWorld">
+  <meta property="og:description" content="using emojis and idioms to make learning English more fun">
+  <meta property="og:type" content="website">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +26,7 @@
       <div class="header-brand">
         <div class="brand-logo" aria-hidden="true">🎉</div>
         <div class="brand-text">
-          <h1 class="brand-title">EmojiWord</h1>
+          <h1 class="brand-title">EmojiWorld</h1>
           <!-- Точный неизменный английский подзаголовок по требованию -->
           <p class="brand-subtitle" id="brand-subtitle">using emojis and idioms to make learning English more fun</p>
         </div>
@@ -30,6 +39,12 @@
           <button type="button" class="lang-btn" data-lang="ru" title="Русский язык">Русский</button>
           <button type="button" class="lang-btn" data-lang="en" title="English language">English</button>
         </div>
+
+        <!-- Кнопка QR-кода для телефона / компьютера -->
+        <button id="open-qr-btn" class="btn-qr-link" title="QR-код постоянной ссылки для телефона">
+          <span class="qr-btn-icon">📱</span>
+          <span class="qr-label" id="qr-btn-label">Телефон</span>
+        </button>
 
         <button id="open-favorites-btn" class="btn-favorites" title="Сақталған сөздік">
           <span class="star-icon">⭐</span>
@@ -298,10 +313,49 @@
     <!-- Подвал приложения -->
     <footer class="app-footer">
       <div class="footer-info">
-        <p id="footer-info-text"><strong>EmojiWord</strong> &bull; using emojis and idioms to make learning English more fun</p>
+        <p id="footer-info-text"><strong>EmojiWorld</strong> &bull; using emojis and idioms to make learning English more fun</p>
         <p class="footer-subtext" id="footer-subtext">Ешқандай хабарлама серверге жіберілмейді. Барлық деректер тек құрылғыңызда сақталады.</p>
       </div>
     </footer>
+  </div>
+
+  <!-- Модальное окно QR-кода («Телефоннан ашу / Открыть на телефоне») -->
+  <div id="qr-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+    <div class="modal-container qr-modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">📱</span>
+          <h2 id="qr-modal-title" class="modal-title">Смартфоннан ашу</h2>
+        </div>
+        <button id="close-qr-btn" class="btn-close-modal" title="Жабу">&times;</button>
+      </div>
+
+      <div class="modal-body qr-modal-body">
+        <p class="qr-description" id="qr-modal-desc">
+          Камераны осы QR-кодқа бағыттаңыз немесе сілтемені көшіріңіз:
+        </p>
+        
+        <div class="qr-code-wrapper">
+          <div id="qr-canvas-box" class="qr-canvas-box" aria-label="QR Code"></div>
+        </div>
+
+        <div class="qr-url-box">
+          <input type="text" id="qr-url-input" class="qr-url-input" readonly>
+          <button type="button" id="copy-qr-link-btn" class="btn-copy-link">
+            📋 Көшіру
+          </button>
+        </div>
+        <p class="qr-note" id="qr-modal-note">
+          💡 Бұл тұрақты HTTPS-сілтеме кез келген құрылғыда (Android, iPhone) компьютер өшірулі кезде де ашылады.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button id="close-qr-bottom-btn" class="btn-modal-primary">
+          Дайын
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Модальное окно избранного («Таңдаулылар / Мой словарик») -->
@@ -339,7 +393,8 @@
     <span id="toast-message">Хабарлама</span>
   </div>
 
-  <!-- Скрипты: i18n, базы данных, мини-игры и приложение -->
+  <!-- Скрипты: генератор QR-кода, i18n, базы данных, мини-игры и приложение -->
+  <script src="qrcode.min.js"></script>
   <script src="i18n.js"></script>
   <script src="data.js"></script>
   <script src="games-data.js"></script>

@@ -2,10 +2,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Автоматические тесты EmojiWord</title>
+  <title>Автоматические тесты EmojiWorld</title>
 </head>
 <body>
-  <div id="test-results" style="font-family: monospace; white-space: pre; padding: 20px;">Запуск тестов EmojiWord...</div>
+  <div id="test-results" style="font-family: monospace; white-space: pre; padding: 20px;">Запуск тестов EmojiWorld...</div>
 
   <iframe id="app-frame" src="index.html" style="width: 850px; height: 750px; display: none;"></iframe>
 
@@ -29,15 +29,15 @@
       const win = frame.contentWindow;
 
       try {
-        // ТЕСТ 1: Название EmojiWord и точный подзаголовок
+        // ТЕСТ 1: Название EmojiWorld и точный подзаголовок
         const title = doc.title;
-        assert(title.includes("EmojiWord"), 
-          "Тест 1.1: Заголовок вкладки браузера содержит «EmojiWord»", 
+        assert(title.includes("EmojiWorld"), 
+          "Тест 1.1: Заголовок вкладки браузера содержит «EmojiWorld»", 
           `title: "${title}"`);
 
         const brandTitle = doc.querySelector(".brand-title").textContent.trim();
-        assert(brandTitle === "EmojiWord", 
-          "Тест 1.2: Название на главном экране — «EmojiWord»", 
+        assert(brandTitle === "EmojiWorld", 
+          "Тест 1.2: Название на главном экране — «EmojiWorld»", 
           `бренд: "${brandTitle}"`);
 
         const subtitle = doc.getElementById("brand-subtitle").textContent.trim();
@@ -45,6 +45,14 @@
         assert(subtitle === expectedSub, 
           "Тест 1.3: Точный английский подзаголовок на главном экране", 
           `получено: "${subtitle}"`);
+
+        const metaApp = doc.querySelector('meta[name="application-name"]');
+        assert(metaApp && metaApp.content === "EmojiWorld",
+          "Тест 1.4: Мета-тег application-name равен «EmojiWorld»");
+
+        const metaOg = doc.querySelector('meta[property="og:title"]');
+        assert(metaOg && metaOg.content === "EmojiWorld",
+          "Тест 1.5: Open Graph заголовок равен «EmojiWorld»");
 
         // ТЕСТ 2: Казахский по умолчанию и сохранение языка
         win.localStorage.removeItem("emoji_english_lang");
@@ -170,6 +178,16 @@
         win.switchView("messenger");
         assert(msgInput.value.includes("strong"), 
           "Тест 9: Текст сообщения сохранён после перехода по играм и обратно");
+
+        // ТЕСТ 10: Кнопка и модальное окно QR-кода
+        const openQrBtn = doc.getElementById("open-qr-btn");
+        assert(openQrBtn !== null, "Тест 10.1: Кнопка вызова QR-кода присутствует в шапке");
+        const qrModal = doc.getElementById("qr-modal");
+        assert(qrModal !== null, "Тест 10.2: Модальное окно QR-кода присутствует в DOM");
+        win.openQrModal();
+        assert(!qrModal.classList.contains("hidden"), "Тест 10.3: Окно QR-кода успешно открывается");
+        win.closeQrModal();
+        assert(qrModal.classList.contains("hidden"), "Тест 10.4: Окно QR-кода успешно закрывается");
 
       } catch (err) {
         results.push(`[CRASH] Исключение: ${err.message}`);

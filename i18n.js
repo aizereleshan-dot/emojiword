@@ -1,18 +1,19 @@
 // =========================================================
-// EmojiWord — Модуль интернационализации (i18n)
+// EmojiWorld — Модуль интернационализации (i18n)
 // Поддерживаемые языки: Қазақша (kk - по умолчанию), Русский (ru), English (en)
 // =========================================================
 
 const I18N_UI = {
   kk: {
     // Название и подзаголовок
-    appName: "EmojiWord",
+    appName: "EmojiWorld",
     appSubtitle: "using emojis and idioms to make learning English more fun", // Строго на английском
     
     // Вкладки навигации
     tabMessenger: "💬 Хабарлама және сөздік",
     tabGames: "🎮 Мини-ойындар",
     myVocabulary: "Сөздігім",
+    qrButton: "Телефон",
 
     // Блок 1: Сообщение (как в мессенджере)
     step1Title: "Хабарлама жазу",
@@ -95,6 +96,12 @@ const I18N_UI = {
     btnInsert: "Хабарламаға қосу",
     btnRemove: "Өшіру",
 
+    // Модальное окно QR-кода
+    qrModalTitle: "Смартфоннан ашу",
+    qrModalDesc: "Камераны осы QR-кодқа бағыттаңыз немесе сілтемені көшіріңіз:",
+    qrCopyBtn: "📋 Көшіру",
+    qrNote: "💡 Бұл тұрақты HTTPS-сілтеме кез келген құрылғыда (Android, iPhone) компьютер өшірулі кезде де ашылады.",
+
     // Тосты и уведомления
     toastInserted: (term) => `«${term}» хабарламаға қосылды! ✍️`,
     toastFavAdded: (term) => `«${term}» сөздікке сақталды! ⭐`,
@@ -106,22 +113,24 @@ const I18N_UI = {
     toastSpeedNormal: "Аудио жылдамдығы: Қалыпты (1x) 🐰",
     toastEmptyMsg: "Алдымен хабарлама жазыңыз! ⚠️",
     toastFavCleared: "Сөздік толық тазартылды 🧹",
+    toastLinkCopied: "Сілтеме буферге көшірілді! 🔗",
     speechNotSupported: "Бұл браузерде дауыстап оқу қолдау таппайды ⚠️",
 
     // Подвал
-    footerInfo: "EmojiWord • using emojis and idioms to make learning English more fun",
+    footerInfo: "EmojiWorld • using emojis and idioms to make learning English more fun",
     footerPrivacy: "Ешқандай хабарлама серверге жіберілмейді. Барлық деректер тек сіздің браузеріңізде сақталады."
   },
 
   ru: {
     // Название и подзаголовок
-    appName: "EmojiWord",
+    appName: "EmojiWorld",
     appSubtitle: "using emojis and idioms to make learning English more fun", // Строго на английском
 
     // Вкладки навигации
     tabMessenger: "💬 Сообщение и словарь",
     tabGames: "🎮 Мини-игры",
     myVocabulary: "Мой словарик",
+    qrButton: "Телефон",
 
     // Блок 1: Сообщение (как в мессенджере)
     step1Title: "Написание сообщения",
@@ -204,6 +213,12 @@ const I18N_UI = {
     btnInsert: "Вставить в сообщение",
     btnRemove: "Удалить",
 
+    // Модальное окно QR-кода
+    qrModalTitle: "Открыть на смартфоне",
+    qrModalDesc: "Наведите камеру телефона на этот QR-код или скопируйте ссылку:",
+    qrCopyBtn: "📋 Скопировать",
+    qrNote: "💡 Эта постоянная HTTPS-ссылка открывается на любом устройстве (Android, iPhone) даже при выключенном компьютере.",
+
     // Тосты и уведомления
     toastInserted: (term) => `Выражение "${term}" вставлено! ✍️`,
     toastFavAdded: (term) => `Сохранено в словарик: "${term}" ⭐`,
@@ -215,22 +230,24 @@ const I18N_UI = {
     toastSpeedNormal: "Скорость озвучки: Обычная (1x) 🐰",
     toastEmptyMsg: "Сначала напишите что-нибудь в сообщении! ⚠️",
     toastFavCleared: "Словарик очищен 🧹",
+    toastLinkCopied: "Ссылка скопирована в буфер обмена! 🔗",
     speechNotSupported: "Озвучивание не поддерживается в этом браузере ⚠️",
 
     // Подвал
-    footerInfo: "EmojiWord • using emojis and idioms to make learning English more fun",
+    footerInfo: "EmojiWorld • using emojis and idioms to make learning English more fun",
     footerPrivacy: "Никакие сообщения не отправляются на сервер. Все данные хранятся только в вашем браузере."
   },
 
   en: {
     // Name and subtitle
-    appName: "EmojiWord",
+    appName: "EmojiWorld",
     appSubtitle: "using emojis and idioms to make learning English more fun",
 
     // Navigation tabs
     tabMessenger: "💬 Message & Vocabulary",
     tabGames: "🎮 Mini-Games",
     myVocabulary: "My Vocabulary",
+    qrButton: "Phone",
 
     // Block 1: Message (Messenger style)
     step1Title: "Message composer",
@@ -313,6 +330,12 @@ const I18N_UI = {
     btnInsert: "Insert into message",
     btnRemove: "Remove",
 
+    // QR modal
+    qrModalTitle: "Open on Smartphone",
+    qrModalDesc: "Scan this QR code with your phone camera or copy the link:",
+    qrCopyBtn: "📋 Copy",
+    qrNote: "💡 This permanent HTTPS link works on any device (Android, iPhone) even when your PC is turned off.",
+
     // Toasts and alerts
     toastInserted: (term) => `Inserted "${term}" into message! ✍️`,
     toastFavAdded: (term) => `Saved "${term}" to vocabulary! ⭐`,
@@ -324,10 +347,11 @@ const I18N_UI = {
     toastSpeedNormal: "Audio speed: Normal (1x) 🐰",
     toastEmptyMsg: "Type something in your message first! ⚠️",
     toastFavCleared: "Vocabulary cleared 🧹",
+    toastLinkCopied: "Link copied to clipboard! 🔗",
     speechNotSupported: "Speech synthesis is not supported in this browser ⚠️",
 
     // Footer
-    footerInfo: "EmojiWord • using emojis and idioms to make learning English more fun",
+    footerInfo: "EmojiWorld • using emojis and idioms to make learning English more fun",
     footerPrivacy: "No messages are ever sent to a server. All data stays strictly in your browser."
   }
 };
